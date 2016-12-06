@@ -1,0 +1,743 @@
+Script started on Thu 04 Dec 2014 04:57:23 PM EST
+]0;gonzales@storm:~/CS2200/lab4a[?1034h[gonzales@storm lab4a]$ cat studdent[K[K[K[Kent.h
+//Michael Gonzales
+//HeaderFile for the Student Object that holds data for linked list
+#include <iostream>
+#include <string>
+using namespace std;
+
+class student {
+
+public:
+	student();
+	student(string, string, string, int, int);
+	void display();
+	string getFirst();
+	string getMid();
+	string getLast();
+	int getAge();
+	int getSocial();
+private:
+	string nameFirst, nameMid, nameLast;
+	int social, age;
+};
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat student.cpp
+//Michael Gonzales
+//Source Code For Student Class contains data
+#include "student.h"
+
+student::student(){
+	nameFirst = "";
+	nameMid = "";
+	nameLast = "";
+	social = 0;
+	age = 0;
+}
+
+student::student(string fName, string lName, string mi, int ss, int uAge) {
+	nameFirst=fName;
+	nameLast =lName;
+	nameMid=mi;
+	social=ss;
+	age=uAge;
+}
+
+void student::display() {
+	cout << endl;
+	cout <<"First Name: " << nameFirst << endl;
+	cout <<"Middle Name: " << nameMid << endl;
+	cout <<"Last Name: " <<nameLast << endl;
+	cout <<"Social Security Number: " << social << endl;
+	cout <<"Age: " << age << endl;
+}
+
+string student::getFirst() {
+	return nameFirst;
+}
+
+string student::getMid() {
+	return nameMid;
+}
+
+string student::getLast(){
+	return nameLast;
+}
+
+int student::getAge(){
+	return age;
+}
+
+int student::getSocial(){
+	return social;
+}
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat node.h
+//Michael Gonzales
+//Header File for Node Class
+#include <iostream>
+#include "student.h"
+#include <string>
+#include <fstream>
+using namespace std;
+
+class Node{
+public:
+	//Constructorrs
+	Node();
+	Node(string, string, string, int, int);
+	Node(const Node*);	
+	Node*getNext();        //Returns Next data member
+	void setNext(Node*);   //Sets next data member
+	Node*getPrev();
+	void setPrev(Node*);
+	void display();
+	string getFirst()const;
+	string getMid()const;
+	string getLast()const;
+	int getAge ()const;
+	int getSocial()const;
+private:
+	student *sPtr;    //pointer to Student Object
+	Node *Next;       //pointer to next node
+	Node *Prev;
+};
+
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat student.cpp
+//Michael Gonzales
+//Source Code For Student Class contains data
+#include "student.h"
+
+student::student(){
+	nameFirst = "";
+	nameMid = "";
+	nameLast = "";
+	social = 0;
+	age = 0;
+}
+
+student::student(string fName, string lName, string mi, int ss, int uAge) {
+	nameFirst=fName;
+	nameLast =lName;
+	nameMid=mi;
+	social=ss;
+	age=uAge;
+}
+
+void student::display() {
+	cout << endl;
+	cout <<"First Name: " << nameFirst << endl;
+	cout <<"Middle Name: " << nameMid << endl;
+	cout <<"Last Name: " <<nameLast << endl;
+	cout <<"Social Security Number: " << social << endl;
+	cout <<"Age: " << age << endl;
+}
+
+string student::getFirst() {
+	return nameFirst;
+}
+
+string student::getMid() {
+	return nameMid;
+}
+
+string student::getLast(){
+	return nameLast;
+}
+
+int student::getAge(){
+	return age;
+}
+
+int student::getSocial(){
+	return social;
+}
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat doublelist.h
+//Michael Gonzales
+//Doubly Linked List Class Header File
+#include <iostream>
+#include <fstream>
+#include "node.h"
+using namespace std;
+
+class List {
+public:
+	//Constructors
+	List();
+	List(const List&, char);
+	List(ifstream &);
+	~List();
+	//Accessor Functions
+	bool isEmpty();
+	int getNumNodes();
+	void append(Node*);
+	void Delete();
+	void insert(Node*);
+	void displayAscending();
+	void displayDescending();
+	void bubbleSort(char);
+	void swap(Node*, Node*);
+	Node*getHead()const ;
+private:
+	//Private Data Members
+	Node * head;
+	Node * tail;
+};
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat doublelist.cpp
+//Michael Gonzales
+//Source Code for List Class
+#include "doublelist.h"
+
+List::List(){
+	head = NULL;
+	tail = NULL;
+}
+List::List(const List & x, char ans){
+	Node *curr = x.head;
+	head = NULL;
+	tail = NULL;
+	while( curr!=NULL ){
+		Node *nPtr = new Node ( curr );
+		append( nPtr );
+		curr=curr->getNext();
+	}
+	if (ans=='Y')
+		this->bubbleSort('a');
+
+}
+List::List(ifstream &InputFile){
+        string fname, lname, mi;
+        int ss, age;
+	head = NULL;
+	tail = NULL;
+        if(InputFile.is_open()){
+                while (InputFile >> fname >> mi >> lname >> ss >> age) {
+                	Node*nPtr;
+			nPtr = new Node (fname, lname, mi, ss, age);
+			append( nPtr);       
+                }
+        InputFile.close();
+        }
+}
+
+List::~List(){
+	Node*curr;
+	Node*next;
+	curr=head;
+	while(curr !=NULL) {
+		next=curr->getNext();
+		delete curr;
+		curr=next;
+	}
+}	
+	
+bool List::isEmpty(){
+	bool value=false;
+	if (head==NULL)
+		value=true;	
+	return value;
+}
+int List::getNumNodes(){
+	Node*curr=head;
+	int count=0;
+	if(head==NULL)
+		count=0;
+	else{
+		while(curr){
+			count++;
+			curr=curr->getNext();	
+		}
+	}
+	return count;
+
+}
+void List::append(Node * nPtr){
+	Node*curr;
+        curr=head;
+        if (head == NULL){
+                head=nPtr;
+		tail=nPtr;
+		head->setPrev(NULL);
+	}
+        else {
+                while(curr->getNext()!= NULL)
+                        curr=curr->getNext();
+                	curr->setNext(nPtr);
+			nPtr->setPrev(curr);
+			nPtr->setNext(NULL);
+			tail=nPtr;
+        }
+}
+void List::Delete(){
+	bool deleted=false;
+	string fname, lname;
+	cout<<"Please Enter First and Last name to be deleted: ";
+	cin >> fname >> lname;
+	Node*curr;
+	curr=head;
+	if(head==NULL)
+		cout <<"List is empty";
+	else{
+		while(curr!=NULL && deleted==false) {
+			if(curr->getFirst() == fname && curr->getLast()==lname) {
+					if(curr==head){
+						head=curr->getNext();
+						head->setPrev(NULL);
+					}
+					else if(curr==tail){
+						tail=curr->getPrev();
+						tail->setNext(NULL);
+					}
+					else{
+						curr->getPrev()->setNext(curr->getNext());
+						curr->getNext()->setPrev(curr->getPrev());
+					}
+					delete curr;
+					deleted=true;
+			}
+			else{
+				curr=curr->getNext();
+			}
+		}
+	}
+	if (deleted)
+		cout<<fname <<" "<<lname<<" successfully deleted\n";
+	else
+		cout<<"name not found\n";
+}
+void List::insert(Node* nPtr){
+	append(nPtr);
+	this->bubbleSort('a');
+}
+void List::displayAscending(){
+        Node*curr;
+        curr=head;
+        if(head == NULL)
+                cout <<"Empty list\n";
+        else{
+                while(curr!= NULL){
+                        curr->display();
+                        curr=curr->getNext();
+                }
+        }
+	
+}
+void List::displayDescending(){
+	Node*curr;
+	curr=tail;
+	if(tail==NULL)
+		cout <<"Empty list\n";
+	else{
+		while(curr!=NULL){
+			curr->display();
+			curr=curr->getPrev();
+		}
+	}
+}	
+void List::bubbleSort(char ans){
+	int size=this->getNumNodes();
+	for(int i=0; i<size;i++){	
+		Node*curr=head;
+		Node*next=head->getNext();
+		if (next==NULL){
+			cout<<"List has One Node Only";
+		}
+		else {
+				if (ans == 'a'){		
+					while(next->getNext() != NULL){
+						if (curr->getAge() > next->getAge()){
+                                        	swap(curr, next);
+						next=curr->getNext();
+						}
+						else {
+						curr=next;
+						next=next->getNext();
+						}
+					}	
+				}
+				else {		
+                                        while(curr->getNext() != NULL){
+                                                if (curr->getAge() < next->getAge()){
+                                                swap(curr, next);
+                                                next=curr->getNext();
+                                                }
+                                                else {
+                                                curr=next;
+                                                next=next->getNext();
+                                                }
+                                        }
+                                }
+	
+		}
+		
+	}
+}	
+Node* List::getHead()const{
+	return head;
+}
+void List::swap(Node*curr, Node*next){
+	 if (curr==head) {
+                curr->setNext(next->getNext());
+                curr->setPrev(next);
+                next->setNext(curr);
+                next->setPrev(NULL);
+                head=next;
+        }
+        else {
+		curr->getPrev()->setNext(next);
+		next->setPrev(curr->getPrev());
+                curr->setNext(next->getNext());
+		curr->getNext()->setPrev(curr);
+                curr->setPrev(next);
+                next->setNext(curr);
+		if (curr->getNext()==NULL)
+			tail=curr;
+        }
+}
+
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat ma[K[Kmain.cpp
+//Michael Gonzales
+//Driver Program
+#include "doublelist.h"
+#include <iostream>
+using namespace std;
+
+//Main Function
+int main(){
+	char ans;
+	ifstream file ("file.txt");
+	cout <<"Unsorted Linked List created from file in Ascending\n"
+	     <<"--------------------------------------\n";
+	List A(file);
+	A.displayAscending();
+	cout <<"Unsorted Linked List created from file in Descending\n"
+	     <<"--------------------------------------\n";
+	A.displayDescending();
+	cout <<"Will now test copy constructer, Would you like the copied list to be sorted? (Y/N): ";
+	cin >> ans;
+	cout <<"\nNow displaying copy in ascending order via Copy Constructor\n"
+	     <<  "----------------------------------------------\n";
+	List B(A, ans);
+	B.displayAscending();
+	cout <<"\nNow displaying list in descending order\n"
+	     <<  "------------------------------\n";
+	B.displayDescending();
+	cout <<" Would you like to delete a name? (Y/N): ";
+	cin >> ans;
+	if (ans == 'Y')
+		B.Delete();
+	cout <<"Displaying new list\n";
+	cout <<"--------------------\n";
+	B.displayAscending();
+	return 0;
+}
+
+
+
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ ./a.out
+Unsorted Linked List created from file in Ascending
+--------------------------------------
+
+First Name: christine
+Middle Name: p
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 52
+
+First Name: evangeline
+Middle Name: p
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 8
+
+First Name: anastas
+Middle Name: c
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 18
+
+First Name: john
+Middle Name: d
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 15
+
+First Name: emmanuel
+Middle Name: j
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 44
+
+First Name: nicolas
+Middle Name: a
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 55
+
+First Name: joanna
+Middle Name: e
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 16
+
+First Name: rafaela
+Middle Name: e
+Last Name: travis
+Social Security Number: 1231231234
+Age: 2
+
+First Name: christine
+Middle Name: m
+Last Name: stavrou
+Social Security Number: 1231231234
+Age: 30
+
+First Name: athanasia
+Middle Name: p
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 84
+Unsorted Linked List created from file in Descending
+--------------------------------------
+
+First Name: athanasia
+Middle Name: p
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 84
+
+First Name: christine
+Middle Name: m
+Last Name: stavrou
+Social Security Number: 1231231234
+Age: 30
+
+First Name: rafaela
+Middle Name: e
+Last Name: travis
+Social Security Number: 1231231234
+Age: 2
+
+First Name: joanna
+Middle Name: e
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 16
+
+First Name: nicolas
+Middle Name: a
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 55
+
+First Name: emmanuel
+Middle Name: j
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 44
+
+First Name: john
+Middle Name: d
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 15
+
+First Name: anastas
+Middle Name: c
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 18
+
+First Name: evangeline
+Middle Name: p
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 8
+
+First Name: christine
+Middle Name: p
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 52
+Will now test copy constructer, Would you like the copied list to be sorted? (Y/N): Y
+
+Now displaying copy in ascending order via Copy Constructor
+----------------------------------------------
+
+First Name: rafaela
+Middle Name: e
+Last Name: travis
+Social Security Number: 1231231234
+Age: 2
+
+First Name: evangeline
+Middle Name: p
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 8
+
+First Name: john
+Middle Name: d
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 15
+
+First Name: joanna
+Middle Name: e
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 16
+
+First Name: anastas
+Middle Name: c
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 18
+
+First Name: christine
+Middle Name: m
+Last Name: stavrou
+Social Security Number: 1231231234
+Age: 30
+
+First Name: emmanuel
+Middle Name: j
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 44
+
+First Name: christine
+Middle Name: p
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 52
+
+First Name: nicolas
+Middle Name: a
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 55
+
+First Name: athanasia
+Middle Name: p
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 84
+
+Now displaying list in descending order
+------------------------------
+
+First Name: athanasia
+Middle Name: p
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 84
+
+First Name: nicolas
+Middle Name: a
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 55
+
+First Name: christine
+Middle Name: p
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 52
+
+First Name: emmanuel
+Middle Name: j
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 44
+
+First Name: christine
+Middle Name: m
+Last Name: stavrou
+Social Security Number: 1231231234
+Age: 30
+
+First Name: anastas
+Middle Name: c
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 18
+
+First Name: joanna
+Middle Name: e
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 16
+
+First Name: john
+Middle Name: d
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 15
+
+First Name: rafaela
+Middle Name: e
+Last Name: travis
+Social Security Number: 1231231234
+Age: 2
+ Would you like to delete a name? (Y/N): Y
+Please Enter First and Last name to be deleted: anastas kanaris
+anastas kanaris successfully deleted
+Displaying new list
+--------------------
+
+First Name: rafaela
+Middle Name: e
+Last Name: travis
+Social Security Number: 1231231234
+Age: 2
+
+First Name: evangeline
+Middle Name: p
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 8
+
+First Name: john
+Middle Name: d
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 15
+
+First Name: joanna
+Middle Name: e
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 16
+
+First Name: christine
+Middle Name: m
+Last Name: stavrou
+Social Security Number: 1231231234
+Age: 30
+
+First Name: emmanuel
+Middle Name: j
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 44
+
+First Name: christine
+Middle Name: p
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 52
+
+First Name: nicolas
+Middle Name: a
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 55
+
+First Name: athanasia
+Middle Name: p
+Last Name: papadakis
+Social Security Number: 1231231234
+Age: 84
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ exit
+exit
+
+Script done on Thu 04 Dec 2014 04:58:47 PM EST

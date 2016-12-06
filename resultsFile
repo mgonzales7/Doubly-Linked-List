@@ -1,0 +1,202 @@
+Script started on Fri 14 Nov 2014 07:15:08 PM EST
+]0;gonzales@storm:~/CS2200/lab4a[?1034h[gonzales@storm lab4a]$ cat node.h
+//Michael Gonzales
+//Header File for Node Class
+#include <iostream>
+#include "student.h"
+#include <string>
+using namespace std;
+
+class Node{
+public:
+	//Constructorrs
+	Node();
+	Node(string, string, string, int, int);	
+	Node*getNext();        //Returns Next data member
+	void setNext(Node*);   //Sets next data member
+	void display();
+private:
+	student *sPtr;    //pointer to Student Object
+	Node *Next;       //pointer to next node
+};
+
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat node.cpp
+//Michael Gonzales
+//Source Code for Node Class
+#include "node.h"
+
+Node::Node() {
+	Next=NULL;
+}
+Node::Node(string fname, string lname, string mi, int ss, int age){
+	student * temp;
+	temp = new student(fname, lname, mi, ss, age);
+	sPtr= temp;
+}
+Node*Node::getNext(){
+	return Next;
+}
+void Node::display(){
+	sPtr->display();
+}
+void Node::setNext(Node* n){
+	Next=n;
+}
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat d[Kstudent.h
+//Michael Gonzales
+//HeaderFile for the Student Object that holds data for linked list
+#include <iostream>
+#include <string>
+using namespace std;
+
+class student {
+
+public:
+	student();
+	student(string, string, string, int, int);
+	void display();
+private:
+	string nameFirst, nameMid, nameLast;
+	int social, age;
+};
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat student.cpp
+//Michael Gonzales
+//Source Code For Student Class contains data
+#include "student.h"
+
+student::student(){
+	nameFirst = "";
+	nameMid = "";
+	nameLast = "";
+	social = 0;
+	age = 0;
+}
+
+student::student(string fName, string lName, string mi, int ss, int uAge) {
+	nameFirst=fName;
+	nameLast =lName;
+	nameMid=mi;
+	social=ss;
+	age=uAge;
+}
+
+void student::display() {
+	cout << endl;
+	cout <<"First Name: " << nameFirst << endl;
+	cout <<"Middle Name: " << nameMid << endl;
+	cout <<"Last Name: " <<nameLast << endl;
+	cout <<"Social Security Number: " << social << endl;
+	cout <<"Age: " << age << endl;
+}
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat main.cpp
+//Michael Gonzales
+//Driver Program
+#include "node.h"
+#include <iostream>
+using namespace std;
+
+Node*head; //Defines head as global Variable
+
+//Function Prototypes
+void appendNode();
+void displayNode();
+
+//Main Function
+int main(){
+	char answer = 'Y';
+	head= NULL;
+	while (answer=='Y'){
+		appendNode();
+		cout <<"continue entering data? (Y/N) ";
+		cin >> answer;
+	}
+	displayNode();
+}
+
+
+//Append function
+void appendNode(){
+	string fname, lname, mi;
+	int ss, age;
+	Node*nPtr;
+	cout << "Enter First Name, Last Name, Middle: ";
+	cin >> fname >> lname >> mi;
+	cout <<"Enter Social Security Number and Age: ";
+	cin >> ss >> age;
+	nPtr = new Node(fname, lname, mi, ss, age); // Calls Node constructor which calls student constuctor
+
+	Node*curr;
+	curr=head;
+	if (head == NULL)
+		head=nPtr;
+	else {
+		while(curr->getNext()!= NULL)
+			curr=curr->getNext();
+		curr->setNext(nPtr);
+	}			
+}
+
+//Display Function
+//Iterates through entire linked list and displays each node;
+void displayNode() {
+	Node*curr;
+	curr=head;
+	if(head = NULL)
+		cout <<"Empty list\n";
+	else{
+		while(curr!= NULL){
+			curr->display();
+			curr=curr->getNext();
+		}
+	}
+}
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ ./main.[K[K[K[K[Ka.out
+Enter First Name, Last Name, Middle: Michael G Gonzales A
+Enter Social Security Number and Age: 123453 21
+continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: Jessica Tor 1 V
+Enter Social Security Number and Age: 123452 21
+continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: Nina Val X
+Enter Social Security Number and Age: 12312 34
+continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: Tor   Eric Clapton D
+Enter Social Security Number and Age: 12342 12
+continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: Ninja Samurai X
+Enter Social Security Number and Age: 12321       99999 91
+continue entering data? (Y/N) N
+
+First Name: Michael
+Middle Name: A
+Last Name: Gonzales
+Social Security Number: 123453
+Age: 21
+
+First Name: Jessica
+Middle Name: V
+Last Name: Tor
+Social Security Number: 123452
+Age: 21
+
+First Name: Nina
+Middle Name: X
+Last Name: Val
+Social Security Number: 12312
+Age: 34
+
+First Name: Eric
+Middle Name: D
+Last Name: Clapton
+Social Security Number: 12342
+Age: 12
+
+First Name: Ninja
+Middle Name: X
+Last Name: Samurai
+Social Security Number: 99999
+Age: 91
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ exit
+exit
+
+Script done on Fri 14 Nov 2014 07:17:26 PM EST

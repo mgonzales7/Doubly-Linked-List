@@ -1,0 +1,361 @@
+Script started on Tue 18 Nov 2014 11:49:08 PM EST
+]0;gonzales@storm:~/CS2200/lab4a[?1034h[gonzales@storm lab4a]$ cat m[Klist.[K[K[K[K[Klist.c[K[K[K[K[K[Kstudent.c[Kh
+//Michael Gonzales
+//HeaderFile for the Student Object that holds data for linked list
+#include <iostream>
+#include <string>
+using namespace std;
+
+class student {
+
+public:
+	student();
+	student(string, string, string, int, int);
+	void display();
+	string getFirst();
+	string getMid();
+	string getLast();
+	int getAge();
+	int getSocial();
+private:
+	string nameFirst, nameMid, nameLast;
+	int social, age;
+};
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cats[K student.cpp
+//Michael Gonzales
+//Source Code For Student Class contains data
+#include "student.h"
+
+student::student(){
+	nameFirst = "";
+	nameMid = "";
+	nameLast = "";
+	social = 0;
+	age = 0;
+}
+
+student::student(string fName, string lName, string mi, int ss, int uAge) {
+	nameFirst=fName;
+	nameLast =lName;
+	nameMid=mi;
+	social=ss;
+	age=uAge;
+}
+
+void student::display() {
+	cout << endl;
+	cout <<"First Name: " << nameFirst << endl;
+	cout <<"Middle Name: " << nameMid << endl;
+	cout <<"Last Name: " <<nameLast << endl;
+	cout <<"Social Security Number: " << social << endl;
+	cout <<"Age: " << age << endl;
+}
+
+string student::getFirst() {
+	return nameFirst;
+}
+
+string student::getMid() {
+	return nameMid;
+}
+
+string student::getLast(){
+	return nameLast;
+}
+
+int student::getAge(){
+	return age;
+}
+
+int student::getSocial(){
+	return social;
+}
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat node.h
+//Michael Gonzales
+//Header File for Node Class
+#include <iostream>
+#include "student.h"
+#include <string>
+using namespace std;
+
+class Node{
+public:
+	//Constructorrs
+	Node();
+	Node(string, string, string, int, int);
+	Node(const Node*);	
+	Node*getNext();        //Returns Next data member
+	void setNext(Node*);   //Sets next data member
+	void display();
+	string getFirst()const;
+	string getMid()const;
+	string getLast()const;
+	int getAge ()const;
+	int getSocial()const;
+private:
+	student *sPtr;    //pointer to Student Object
+	Node *Next;       //pointer to next node
+};
+
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat node.cpp
+//Michael Gonzales
+//Source Code for Node Class
+#include "node.h"
+
+Node::Node() {
+	Next=NULL;
+}
+Node::Node(string fname, string lname, string mi, int ss, int age){
+	student * temp;
+	temp = new student(fname, lname, mi, ss, age);
+	sPtr= temp;
+}
+Node::Node(const Node* x){
+	student * temp;
+	temp = new student(x->getFirst(),x->getLast(),x->getMid(), x->getSocial(), x->getAge());
+	sPtr= temp;
+	Next=NULL;
+}
+Node*Node::getNext(){
+	return Next;
+}
+void Node::display(){
+	sPtr->display();
+}
+void Node::setNext(Node* n){
+	Next=n;
+}
+string Node:: getFirst() const {
+	return sPtr->getFirst();
+}
+string Node:: getMid() const {
+	return sPtr->getMid();
+}
+string Node:: getLast() const {
+	return sPtr->getLast();
+}
+int Node:: getAge() const {
+	return sPtr->getAge();
+} 
+int Node:: getSocial() const {
+	return sPtr->getSocial();
+}
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat list.h[Kcpp[K[K[Kh
+//Michael Gonzales
+//Linked List Class Header File
+#include <iostream>
+#include "node.h"
+using namespace std;
+
+class List {
+public:
+	//Constructors
+	List();
+	List(const List&);
+	~List();
+	//Accessor Functions
+	bool isEmpty();
+	void getNumNodes();
+	void append();
+	void Delete();
+	void displayAscending();
+	Node*getHead()const ;
+private:
+	//Private Data Members
+	Node * head;
+};
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat lis.[Kt.cpp
+//Michael Gonzales
+//Source Code for List Class
+#include "list.h"
+
+List::List(){
+	head = NULL;
+}
+List::List(const List & x){
+	Node * curr;
+	Node * currX;
+	head = new Node(x.getHead());
+	curr = head;
+	currX= x.getHead();
+	cout<<"Begin Transversal";
+	while(currX->getNext()!=NULL){
+		currX=currX->getNext();
+		Node*nPtr;
+		nPtr=new Node(currX);
+		curr->setNext(nPtr);
+		curr=curr->getNext();
+	}
+}
+List::~List(){
+	Node*curr;
+	Node*next;
+	curr=head;
+	while(curr !=NULL) {
+		next=curr->getNext();
+		delete curr;
+		curr=next;
+	}
+}	
+	
+bool List::isEmpty(){
+	bool value=false;
+	if (head=NULL)
+		value=true;	
+	return value;
+}
+void List::getNumNodes(){
+}
+void List::append(){
+	string fname, lname, mi;
+        int ss, age;
+        Node*nPtr;
+        cout << "Enter First Name, Last Name, Middle: ";
+        cin >> fname >> lname >> mi;
+        cout <<"Enter Social Security Number and Age: ";
+        cin >> ss >> age;
+        nPtr = new Node(fname, lname, mi, ss, age);
+
+	Node*curr;
+        curr=head;
+        if (head == NULL)
+                head=nPtr;
+        else {
+                while(curr->getNext()!= NULL)
+                        curr=curr->getNext();
+                curr->setNext(nPtr);
+        }
+}
+void List::Delete(){
+	
+}
+void List::displayAscending(){
+        Node*curr;
+        curr=head;
+        if(head = NULL)
+                cout <<"Empty list\n";
+        else{
+                while(curr!= NULL){
+                        curr->display();
+                        curr=curr->getNext();
+                }
+        }
+	
+}
+Node* List::getHead()const{
+	return head;
+}
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ cat main.cpp
+//Michael Gonzales
+//Driver Program
+#include "list.h"
+#include <iostream>
+using namespace std;
+
+//Main Function
+int main(){
+	char answer = 'Y';
+	List A;
+	while (answer=='Y'){
+		A.append();
+		cout <<"continue entering data? (Y/N) ";
+		cin >> answer;
+	}
+	A.displayAscending();
+	List B(A);
+	cout<<"Test Copy\n";
+	B.displayAscending();
+	return 0;
+}
+
+
+
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ ./a.out
+Enter First Name, Last Name, Middle: Christine Kanaris p
+Enter Social Security Number and Age: 1231231234 52
+continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: evangeline p kana      kanaris p
+Enter Social Security Number and Age: 1231231234 8
+continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: anastas kanaris cs 
+Enter Social Security Number and Age: 1231234  31234 15
+continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: 1 john d kanaris 1231231234 44
+Enter Social Security Number and Age: continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: emmanuel j papadakis 1231231234 44
+Enter Social Security Number and Age: continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: nicolas a kanaris 1231231234 55
+Enter Social Security Number and Age: continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: joanna e papadakis 1231231234 16
+Enter Social Security Number and Age: continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: rafaela e travis 1231231234 2
+Enter Social Security Number and Age: continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: christine m stavrou 1231231234 30
+Enter Social Security Number and Age: continue entering data? (Y/N) Y
+Enter First Name, Last Name, Middle: athanasia p papadakis 1231231234 84
+Enter Social Security Number and Age: continue entering data? (Y/N) Y N
+
+First Name: Christine
+Middle Name: p
+Last Name: Kanaris
+Social Security Number: 1231231234
+Age: 52
+
+First Name: evangeline
+Middle Name: p
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 8
+
+First Name: anastas
+Middle Name: c
+Last Name: kanaris
+Social Security Number: 1231231234
+Age: 15
+
+First Name: john
+Middle Name: kanaris
+Last Name: d
+Social Security Number: 1231231234
+Age: 44
+
+First Name: emmanuel
+Middle Name: papadakis
+Last Name: j
+Social Security Number: 1231231234
+Age: 44
+
+First Name: nicolas
+Middle Name: kanaris
+Last Name: a
+Social Security Number: 1231231234
+Age: 55
+
+First Name: joanna
+Middle Name: papadakis
+Last Name: e
+Social Security Number: 1231231234
+Age: 16
+
+First Name: rafaela
+Middle Name: travis
+Last Name: e
+Social Security Number: 1231231234
+Age: 2
+
+First Name: christine
+Middle Name: stavrou
+Last Name: m
+Social Security Number: 1231231234
+Age: 30
+
+First Name: athanasia
+Middle Name: papadakis
+Last Name: p
+Social Security Number: 1231231234
+Age: 84
+Segmentation fault
+]0;gonzales@storm:~/CS2200/lab4a[gonzales@storm lab4a]$ exit
+exit
+
+Script done on Tue 18 Nov 2014 11:53:27 PM EST
